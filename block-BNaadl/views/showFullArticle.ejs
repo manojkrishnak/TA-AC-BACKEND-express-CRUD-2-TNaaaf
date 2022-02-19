@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://kit.fontawesome.com/65f4240069.js" crossorigin="anonymous"></script>
+    <title><%= article.title%></title>
+</head>
+<body>
+    <header class="flex justify-between items-center px-5 py-2 bg-cyan-200">
+        <a class="text-orange-700 text-2xl font-semibold uppercase" href="#">
+            <h1>Blogger</h1>
+        </a>
+        <nav>
+            <ul>
+                <li><a class="text-white bg-pink-600 px-2 py-1" href="/article/">Back</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main class="p-5">
+        <h2 class="text-4xl font-semibold mb-2"><%= article.title %></h2>
+        <div class="flex justify-between my-4">
+            <div class="m-1">
+                <span><%= article.formattedDate %> &nbsp;</span>|
+                <span><%= article.author%></span>
+            </div>
+            <div class="m-1">
+                <span class="my-2 mr-2 hover:text-green-500 like"><i class="fas fa-thumbs-up mr-1"></i><%= article.likes%></span>
+                <span class="my-2 mr-2 hover:text-red-600 dislike"><i class="fas fa-thumbs-down mr-1"></i><%= (article.dislikes || 0) %></span>
+            </div>
+        </div>
+        <p class="leading-7"><%= article.description %></p>
+    </main>
+    <script>
+        const likeBtn = document.querySelector(".like");
+        const dislikeBtn = document.querySelector(".dislike");
+
+        likeBtn.addEventListener("click", function(){
+            const xhr = new XMLHttpRequest();
+            xhr.open("PUT", "/article/<%= article._id %>");
+            xhr.setRequestHeader("Content-Type","application/json");
+            xhr.onload = function(data){
+                if(data.currentTarget.status === 200){
+                    let data1 = data.target.response;
+                    data1 = JSON.parse(data1);
+                    likeBtn.innerHTML = "<i class='fas fa-thumbs-up mr-1'></i>"+ data1.likes;
+                }else{
+                    alert("Sorry there is some error")
+                }
+            }
+            xhr.send();
+        });
+    </script>
+</body>
+</html>
